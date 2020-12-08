@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "Python: ECE 552 Security Camera",
+            "type": "python",
+            "stopOnEntry": "false",
+            "request": "launch",
+            "program": "${workspaceFolder}/camera.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}
