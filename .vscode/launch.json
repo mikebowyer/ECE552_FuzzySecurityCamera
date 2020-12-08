@@ -5,7 +5,7 @@
             "type": "python",
             "stopOnEntry": "false",
             "request": "launch",
-            "program": "${workspaceFolder}/camera.py",
+            "program": "${workspaceFolder}/security_cam_start.py",
             "console": "integratedTerminal"
         }
     ]
