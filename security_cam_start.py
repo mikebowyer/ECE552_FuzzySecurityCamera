@@ -1,4 +1,9 @@
+
+# External Library Imports
 from picamera import PiCamera
+# Internal Library Imports
+from lib import fuzzy_clustering as fcm
+
 from time import sleep
 import numpy as np
 from PIL import Image
@@ -22,6 +27,8 @@ for i in range(5):
     im = Image.fromarray(output)
     print("Saving Original Image")
     im.save('./outputImages/%s_OriginalImage.jpg' % i)
+
+    fcm.fuzzyClusteringOnImage(output)
 
     colors = ['black', 'orange', 'grey']
 
