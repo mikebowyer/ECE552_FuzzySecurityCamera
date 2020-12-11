@@ -2,12 +2,11 @@
 # External Library Imports
 from picamera import PiCamera
 import numpy as np
-# Internal Library Imports
-from lib import fuzzy_clustering as fcm
-
-from time import sleep
 from PIL import Image
 import matplotlib.pyplot as plt
+# Internal Library Imports
+from lib import fuzzy_clustering as fcm
+from lib import centroid_calculator as cc
 
 
 # Camera Parametesr and Initialization
@@ -20,7 +19,6 @@ camera.resolution = (img_width, img_height)
 
 for i in range(5):
     print("Taking Image Number: %s" % i)
-    sleep(1)
     # camera.capture('/home/pi/Desktop/image%s.jpg' % i)
     output = np.empty((240, 320, 3), dtype=np.uint8)
     camera.capture(output, 'rgb')
@@ -29,6 +27,8 @@ for i in range(5):
     im.save('./outputImages/%s_OriginalImage.jpg' % i)
 
     clusteredImg = fcm.fuzzyClusteringOnImage(output, camera.resolution)
+
+    clusteredImgWCentroid, x, y = cc.findBrightClusterCenter(clusteredImg)
 
     print("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
