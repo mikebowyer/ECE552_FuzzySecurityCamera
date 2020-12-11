@@ -27,9 +27,11 @@ for i in range(5):
     print("Saving Original Image")
     im.save('./outputImages/%s_OriginalImage.jpg' % i)
 
-    clusteredImg = fcm.fuzzyClusteringOnImage(output, camera.resolution)
+    clusteredImg, brightestClustIDs = fcm.fuzzyClusteringOnImage(
+        output, camera.resolution)
 
-    clusteredImgWCentroid, x, y = cc.findBrightClusterCenter(clusteredImg)
+    x, y = cc.findBrightClusterCenter(
+        clusteredImg, brightestClustIDs[0][0])
 
     print("Saving Segmented Image")
     fig, ax = plt.subplots(1)

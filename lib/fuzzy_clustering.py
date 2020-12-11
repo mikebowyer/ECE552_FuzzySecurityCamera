@@ -16,6 +16,15 @@ import numpy as np
 import skfuzzy as fuzz
 
 
+def findBrightestCluster(clusterRGBCenters):
+    rgbMeans = [[0, clusterRGBCenters[0].mean()],
+                [1, clusterRGBCenters[1].mean()],
+                [2, clusterRGBCenters[2].mean()]]
+    rgbMeans.sort(key=lambda x: x[1])  # in places
+    rgbMeans.reverse()
+    return rgbMeans
+
+
 def fuzzyClusteringOnImage(inputImage, camRes):
     colors = ['black', 'orange', 'grey']
 
@@ -33,6 +42,8 @@ def fuzzyClusteringOnImage(inputImage, camRes):
     cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
         mydata, c=numClusters, m=2, error=0.005, maxiter=1000)
 
+    # Determine which cluster
+    brightestClusterIDs = findBrightestCluster(cntr)
     numPixels = len(u[0, :])
     pixelClassification = np.empty(numPixels)
     for j in range(0, numPixels):
@@ -41,4 +52,4 @@ def fuzzyClusteringOnImage(inputImage, camRes):
     pixelClassifiedImage = pixelClassification.reshape(
         camRes.height, camRes.width)
 
-    return pixelClassifiedImage
+    return pixelClassifiedImage, brightestClusterIDs
