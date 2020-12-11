@@ -4,6 +4,7 @@ from picamera import PiCamera
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 # Internal Library Imports
 from lib import fuzzy_clustering as fcm
 from lib import centroid_calculator as cc
@@ -31,5 +32,15 @@ for i in range(5):
     clusteredImgWCentroid, x, y = cc.findBrightClusterCenter(clusteredImg)
 
     print("Saving Segmented Image")
+    fig, ax = plt.subplots(1)
+    ax.imshow(clusteredImg)
+    circle = patches.Circle((x, y), 4, linewidth=1,
+                            edgecolor='r', facecolor='none')
+    ax.add_patch(circle)
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
-    plt.imsave(imgName, clusteredImg)
+    plt.savefig(imgName)
+
+    # plt.imshow(clusteredImg)
+    # plt.scatter(x, y, s=500, c='red', marker='o')
+    # plt.show()
+    # plt.imsave(imgName)
