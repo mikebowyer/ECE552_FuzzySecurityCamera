@@ -5,6 +5,7 @@ import math
 from PIL import Image
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.patches as mpatches
 import logging
 # Internal Library Imports
 from lib import fuzzy_clustering as fcm
@@ -27,28 +28,37 @@ def capturePic(cam):
 def saveClusteredImg(img, clusterIds, fileName, imgCenter, brightClustCenter):
     # Establish color map
     colorMap = fcm.createColorMap(brightestClustIDs)
+
     # Create image to save
     fig, ax = plt.subplots(1)
     ax.imshow(clusteredImg, cmap=colorMap)
     clusterCenterCircle = patches.Circle((x, y), 4, linewidth=1,
-                                         edgecolor='r', facecolor='r')
+                                         edgecolor='r', facecolor='r', label="Bright cluster center")
     ax.add_patch(clusterCenterCircle)
     imgCenterCircle = patches.Circle((imgCenter[0], imgCenter[1]), 4, linewidth=1,
-                                     edgecolor='g', facecolor='g')
+                                     edgecolor='g', facecolor='g', label="Image center")
     ax.add_patch(imgCenterCircle)
 
-    # place a text box in upper left in axes coords
-    brightStr = "Image Center Coordinates: ({}, {})".format(
+    # Create Title
+    brightStr = "Image center coordinates: ({}, {})".format(
         imgCenter[0], imgCenter[1])
-    centerStr = "Bright Cluster Center Coordinates: ({}, {})".format(
+    centerStr = "Bright cluster center coordinates: ({}, {})".format(
         brightClustCenter[0], brightClustCenter[1])
-    correctionStc = "Centers Difference: ({}, {})".format(
+    correctionStc = "Difference between centers: ({}, {})".format(
         brightClustCenter[0] - imgCenter[0], brightClustCenter[1] - imgCenter[1])
     textstr = '\n'.join((brightStr, centerStr, correctionStc))
-    # props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-    # ax.text(0.0, 0.0, textstr, transform=ax.transAxes, fontsize=14,
-    #         verticalalignment='top', bbox=props)
     plt.title(textstr)
+
+    # Create Legend
+    whitePatch = mpatches.Patch(color='white', label='Brightest cluster')
+    greyPatch = mpatches.Patch(color='grey', label='Semi-bright cluster')
+    blackPatch = mpatches.Patch(color='black', label='Dark cluster')
+    legend1 = ax.legend(handles=[whitePatch, greyPatch, blackPatch],
+                        bbox_to_anchor=(1.35, 1), facecolor='moccasin')
+    legend2 = ax.legend(handles=[clusterCenterCircle, imgCenterCircle],
+                        bbox_to_anchor=(1.35, .8), facecolor='moccasin')
+    # Manually add the first legend back
+    ax.add_artist(legend1)
     # save image
     plt.savefig(imgName, bbox_inches='tight')
 
