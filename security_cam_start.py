@@ -1,6 +1,7 @@
 # External Library Imports
 import cv2
 import numpy as np
+import math
 from PIL import Image
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -23,15 +24,18 @@ def capturePic(cam):
     return ret, image
 
 
-def saveClusteredImg(img, clusterIds, fileName):
+def saveClusteredImg(img, clusterIds, fileName, imgCenter):
     # Establish color map
     colorMap = fcm.createColorMap(brightestClustIDs)
     # Create image to save
     fig, ax = plt.subplots(1)
     ax.imshow(clusteredImg, cmap=colorMap)
-    circle = patches.Circle((x, y), 4, linewidth=1,
-                            edgecolor='r', facecolor='r')
-    ax.add_patch(circle)
+    clusterCenterCircle = patches.Circle((x, y), 4, linewidth=1,
+                                         edgecolor='r', facecolor='r')
+    ax.add_patch(clusterCenterCircle)
+    imgCenterCircle = patches.Circle((imgCenter[0], imgCenter[1]), 4, linewidth=1,
+                                     edgecolor='g', facecolor='g')
+    ax.add_patch(imgCenterCircle)
     # save image
     plt.savefig(imgName)
 
@@ -40,6 +44,7 @@ logging.info("Initializing Camera")
 cam = cv2.VideoCapture(1)
 img_width = 320
 img_height = 240
+img_center = [math.floor(img_width/2), math.floor(img_height/2)]
 cam.set(3, img_width)
 cam.set(4, img_height)
 
@@ -61,4 +66,4 @@ for i in range(5):
 
     logging.info("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
-    saveClusteredImg(clusteredImg, brightestClustIDs, imgName)
+    saveClusteredImg(clusteredImg, brightestClustIDs, imgName, img_center)
