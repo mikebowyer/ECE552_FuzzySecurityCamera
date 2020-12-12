@@ -19,7 +19,7 @@ def capturePic(cam):
     return ret, image
 
 
-# Camera Parametesr and Initialization
+    # Camera Parametesr and Initialization
 print("Intialization Camera")
 cam = cv2.VideoCapture(1)
 img_width = 320
@@ -39,12 +39,14 @@ for i in range(5):
     clusteredImg, brightestClustIDs = fcm.fuzzyClusteringOnImage(
         imgArray, [img_width, img_height])
 
+    colorMap = fcm.createColorMap(brightestClustIDs)
+
     x, y = cc.findBrightClusterCenter(
         clusteredImg, brightestClustIDs[0][0])
 
     print("Saving Segmented Image")
     fig, ax = plt.subplots(1)
-    ax.imshow(clusteredImg)
+    ax.imshow(clusteredImg, cmap=colorMap)
     circle = patches.Circle((x, y), 4, linewidth=1,
                             edgecolor='r', facecolor='r')
     ax.add_patch(circle)

@@ -14,6 +14,7 @@
 ##################################################
 import numpy as np
 import skfuzzy as fuzz
+from matplotlib import colors
 
 
 def findBrightestCluster(clusterRGBCenters):
@@ -26,7 +27,7 @@ def findBrightestCluster(clusterRGBCenters):
 
 
 def fuzzyClusteringOnImage(inputImage, imgRes):
-    colors = ['black', 'orange', 'grey']
+    # colors = ['black', 'orange', 'grey']
 
     # Define three cluster centers and parameters
     centers = [[0, 0, 0],
@@ -40,7 +41,7 @@ def fuzzyClusteringOnImage(inputImage, imgRes):
     bluePixelValues = inputImage[:, :, 2].flatten()
     mydata = np.vstack((redPixelValues, greenPixelValues, bluePixelValues))
     cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
-        mydata, c=numClusters, m=2, error=0.005, maxiter=1000)
+        mydata, c=numClusters, m=2, error=0.5, maxiter=1000)
 
     # Determine which cluster
     brightestClusterIDs = findBrightestCluster(cntr)
@@ -53,3 +54,19 @@ def fuzzyClusteringOnImage(inputImage, imgRes):
         imgRes[1], imgRes[0])
 
     return pixelClassifiedImage, brightestClusterIDs
+
+
+def createColorMap(brightestClustIDs):
+    colorOrder = [-1, -1, 1]
+
+    for i in range(0, 3):
+        colorId = brightestClustIDs[i][0]
+        if(i == 0):
+            colorOrder[colorId] = 'white'
+        elif(i == 1):
+            colorOrder[colorId] = 'grey'
+        else:
+            colorOrder[colorId] = 'black'
+
+    cmap = colors.ListedColormap(colorOrder)
+    return cmap
