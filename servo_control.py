@@ -9,9 +9,12 @@ def getDutyFromAngle(angle):
 
 def controlServo(servo, gpiopin, duty):
     # print(duty)
+    GPIO.output(11, True)
+    GPIO.output(13, True)
     servo.ChangeDutyCycle(duty)
     sleep(1)
-    # GPIO.output(11, False)
+    GPIO.output(11, False)
+    GPIO.output(13, False)
     # servo.ChangeDutyCycle(duty)
 
 
