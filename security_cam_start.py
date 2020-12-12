@@ -24,7 +24,7 @@ def capturePic(cam):
     return ret, image
 
 
-def saveClusteredImg(img, clusterIds, fileName, imgCenter):
+def saveClusteredImg(img, clusterIds, fileName, imgCenter, brightClustCenter):
     # Establish color map
     colorMap = fcm.createColorMap(brightestClustIDs)
     # Create image to save
@@ -36,10 +36,24 @@ def saveClusteredImg(img, clusterIds, fileName, imgCenter):
     imgCenterCircle = patches.Circle((imgCenter[0], imgCenter[1]), 4, linewidth=1,
                                      edgecolor='g', facecolor='g')
     ax.add_patch(imgCenterCircle)
-    # save image
-    plt.savefig(imgName)
 
-    # Camera Parametesr and Initialization
+    # place a text box in upper left in axes coords
+    brightStr = "Image Center Coordinates: ({}, {})".format(
+        imgCenter[0], imgCenter[1])
+    centerStr = "Bright Cluster Center Coordinates: ({}, {})".format(
+        brightClustCenter[0], brightClustCenter[1])
+    correctionStc = "Centers Difference: ({}, {})".format(
+        brightClustCenter[0] - imgCenter[0], brightClustCenter[1] - imgCenter[1])
+    textstr = '\n'.join((brightStr, centerStr, correctionStc))
+    # props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+    # ax.text(0.0, 0.0, textstr, transform=ax.transAxes, fontsize=14,
+    #         verticalalignment='top', bbox=props)
+    plt.title(textstr)
+    # save image
+    plt.savefig(imgName, bbox_inches='tight')
+
+
+# Camera Parametesr and Initialization
 logging.info("Initializing Camera")
 cam = cv2.VideoCapture(1)
 img_width = 320
@@ -63,7 +77,10 @@ for i in range(5):
     logging.debug("Calculating center of brightest cluster")
     x, y = cc.findBrightClusterCenter(
         clusteredImg, brightestClustIDs[0][0])
+    logging.info(
+        "The brightest cluster center is at coordinates: ({},{})".format(x, y))
 
     logging.info("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
-    saveClusteredImg(clusteredImg, brightestClustIDs, imgName, img_center)
+    saveClusteredImg(clusteredImg, brightestClustIDs,
+                     imgName, img_center, [x, y])
