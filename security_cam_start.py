@@ -20,23 +20,21 @@ def capturePic(cam):
 
 
 # Camera Parametesr and Initialization
+print("Intialization Camera")
 cam = cv2.VideoCapture(1)
 img_width = 320
 img_height = 240
 cam.set(3, img_width)
 cam.set(4, img_height)
 
-# print("Intialization Camera")
-# camera = PiCamera()
-# camera.rotation = 0
-# camera.resolution = (img_width, img_height)
-
 for i in range(5):
     print("Taking Image Number: %s" % i)
     ret, imgArray = capturePic(cam)
-    decodedImg = Image.fromarray(imgArray)
+
     print("Saving Original Image")
+    decodedImg = Image.fromarray(imgArray)
     decodedImg.save('./outputImages/%s_OriginalImage.jpg' % i)
+
     print("Performing fuzzy c means")
     clusteredImg, brightestClustIDs = fcm.fuzzyClusteringOnImage(
         imgArray, [img_width, img_height])
@@ -48,12 +46,7 @@ for i in range(5):
     fig, ax = plt.subplots(1)
     ax.imshow(clusteredImg)
     circle = patches.Circle((x, y), 4, linewidth=1,
-                            edgecolor='r', facecolor='none')
+                            edgecolor='r', facecolor='r')
     ax.add_patch(circle)
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
     plt.savefig(imgName)
-
-    # plt.imshow(clusteredImg)
-    # plt.scatter(x, y, s=500, c='red', marker='o')
-    # plt.show()
-    # plt.imsave(imgName)
