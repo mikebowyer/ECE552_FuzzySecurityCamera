@@ -18,7 +18,7 @@ logging.getLogger('matplotlib.font_manager').disabled = True
 def capturePic(cam):
     ret = 0
     image = 0
-    for i in range(0, 10):
+    for i in range(0, 5):
         ret, image = cam.read()
     return ret, image
 
@@ -55,6 +55,7 @@ for i in range(5):
     clusteredImg, brightestClustIDs = fcm.fuzzyClusteringOnImage(
         imgArray, [img_width, img_height])
 
+    logging.debug("Calculating center of brightest cluster")
     x, y = cc.findBrightClusterCenter(
         clusteredImg, brightestClustIDs[0][0])
 
