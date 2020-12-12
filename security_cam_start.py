@@ -10,6 +10,7 @@ import logging
 # Internal Library Imports
 from lib import fuzzy_clustering as fcm
 from lib import centroid_calculator as cc
+from lib import img_tools as imgtls
 
 logging.basicConfig(
     format='[%(levelname)s\t%(asctime)s] %(message)s', datefmt='%I:%M:%S')
@@ -23,44 +24,6 @@ def capturePic(cam):
     for i in range(0, 5):
         ret, image = cam.read()
     return ret, image
-
-
-def saveClusteredImg(img, clusterIds, fileName, imgCenter, brightClustCenter):
-    # Establish color map
-    colorMap = fcm.createColorMap(brightestClustIDs)
-
-    # Create image to save
-    fig, ax = plt.subplots(1)
-    ax.imshow(clusteredImg, cmap=colorMap)
-    clusterCenterCircle = patches.Circle((x, y), 4, linewidth=1,
-                                         edgecolor='r', facecolor='r', label="Bright cluster center")
-    ax.add_patch(clusterCenterCircle)
-    imgCenterCircle = patches.Circle((imgCenter[0], imgCenter[1]), 4, linewidth=1,
-                                     edgecolor='g', facecolor='g', label="Image center")
-    ax.add_patch(imgCenterCircle)
-
-    # Create Title
-    brightStr = "Image center coordinates: ({}, {})".format(
-        imgCenter[0], imgCenter[1])
-    centerStr = "Bright cluster center coordinates: ({}, {})".format(
-        brightClustCenter[0], brightClustCenter[1])
-    correctionStc = "Difference between centers: ({}, {})".format(
-        brightClustCenter[0] - imgCenter[0], brightClustCenter[1] - imgCenter[1])
-    textstr = '\n'.join((brightStr, centerStr, correctionStc))
-    plt.title(textstr)
-
-    # Create Legend
-    whitePatch = mpatches.Patch(color='white', label='Brightest cluster')
-    greyPatch = mpatches.Patch(color='grey', label='Semi-bright cluster')
-    blackPatch = mpatches.Patch(color='black', label='Dark cluster')
-    legend1 = ax.legend(handles=[whitePatch, greyPatch, blackPatch],
-                        bbox_to_anchor=(1.35, 1), facecolor='moccasin')
-    legend2 = ax.legend(handles=[clusterCenterCircle, imgCenterCircle],
-                        bbox_to_anchor=(1.35, .8), facecolor='moccasin')
-    # Manually add the first legend back
-    ax.add_artist(legend1)
-    # save image
-    plt.savefig(imgName, bbox_inches='tight')
 
 
 # Camera Parametesr and Initialization
@@ -92,5 +55,5 @@ for i in range(5):
 
     logging.info("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
-    saveClusteredImg(clusteredImg, brightestClustIDs,
-                     imgName, img_center, [x, y])
+    imgtls.saveClusteredImg(clusteredImg, brightestClustIDs,
+                            imgName, img_center, [x, y])
