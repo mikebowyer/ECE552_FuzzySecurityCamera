@@ -25,7 +25,7 @@ def findBrightestCluster(clusterRGBCenters):
     return rgbMeans
 
 
-def fuzzyClusteringOnImage(inputImage, camRes):
+def fuzzyClusteringOnImage(inputImage, imgRes):
     colors = ['black', 'orange', 'grey']
 
     # Define three cluster centers and parameters
@@ -50,6 +50,6 @@ def fuzzyClusteringOnImage(inputImage, camRes):
         pixelClassification[j] = u[:, j].argmax()
 
     pixelClassifiedImage = pixelClassification.reshape(
-        camRes.height, camRes.width)
+        imgRes[1], imgRes[0])
 
     return pixelClassifiedImage, brightestClusterIDs

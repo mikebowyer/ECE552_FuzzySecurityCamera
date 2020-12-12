@@ -33,28 +33,25 @@ cam.set(4, img_height)
 
 for i in range(5):
     print("Taking Image Number: %s" % i)
-    ret, img = capturePic(cam)
-    imgToSave = Image.fromarray(img)
+    ret, imgArray = capturePic(cam)
+    decodedImg = Image.fromarray(imgArray)
     print("Saving Original Image")
-    imgToSave.save('./outputImages/%s_OriginalImage.jpg' % i)
+    decodedImg.save('./outputImages/%s_OriginalImage.jpg' % i)
+    print("Performing fuzzy c means")
+    clusteredImg, brightestClustIDs = fcm.fuzzyClusteringOnImage(
+        imgArray, [img_width, img_height])
 
-    # output = np.empty((240, 320, 3), dtype=np.uint8)
-    # camera.capture(output, 'rgb')
+    x, y = cc.findBrightClusterCenter(
+        clusteredImg, brightestClustIDs[0][0])
 
-    # clusteredImg, brightestClustIDs = fcm.fuzzyClusteringOnImage(
-    #     output, camera.resolution)
-
-    # x, y = cc.findBrightClusterCenter(
-    #     clusteredImg, brightestClustIDs[0][0])
-
-    # print("Saving Segmented Image")
-    # fig, ax = plt.subplots(1)
-    # ax.imshow(clusteredImg)
-    # circle = patches.Circle((x, y), 4, linewidth=1,
-    #                         edgecolor='r', facecolor='none')
-    # ax.add_patch(circle)
-    # imgName = './outputImages/%s_ClusteredImage.jpg' % i
-    # plt.savefig(imgName)
+    print("Saving Segmented Image")
+    fig, ax = plt.subplots(1)
+    ax.imshow(clusteredImg)
+    circle = patches.Circle((x, y), 4, linewidth=1,
+                            edgecolor='r', facecolor='none')
+    ax.add_patch(circle)
+    imgName = './outputImages/%s_ClusteredImage.jpg' % i
+    plt.savefig(imgName)
 
     # plt.imshow(clusteredImg)
     # plt.scatter(x, y, s=500, c='red', marker='o')
