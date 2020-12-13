@@ -46,6 +46,16 @@ def saveClusteredImg(img, brightestClustIDs, fileName, imgCenter, brightClustCen
 def capturePic(cam):
     ret = 0
     image = 0
+    latestImg = 0
+    for i in range(0, 4):
+        cam.grab()
+    ret, image = cam.read()
+    return ret, image
+
+
+def warmUpCamera(cam):
+    ret = 0
+    image = 0
     for i in range(0, 10):
         ret, image = cam.read()
     return ret, image

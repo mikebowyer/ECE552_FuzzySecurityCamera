@@ -20,7 +20,7 @@ from matplotlib.pyplot import plot, draw, show
 
 class fuzzyServoSetPointChangeCalc:
     def __init__(self):
-        self.plotOrNot = True
+        self.plotOrNot = False
         # self.plotOrNot = True
         self.createMembershipFunctions()
 

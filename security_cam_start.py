@@ -39,6 +39,7 @@ img_height = 240
 img_center = [math.floor(img_width/2), math.floor(img_height/2)]
 cam.set(3, img_width)
 cam.set(4, img_height)
+imgtls.warmUpCamera(cam)
 
 
 ############################
