@@ -11,7 +11,8 @@ import logging
 from lib import fuzzy_clustering as fcm
 from lib import centroid_calculator as cc
 from lib import img_tools as imgtls
-from lib import servo_control as fsc
+from lib import servo_control as servoControl
+from lib import fuzzy_servo_controller as fsc
 
 ############################
 ### Setup logging config ###
@@ -22,9 +23,10 @@ logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger('matplotlib.font_manager').disabled = True
 
 ############################
-### Setup logging config ###
+# Setup Servo Controller and set point calculator
 ############################
-servoController = fsc.ServoControl()
+servoController = servoControl.ServoControl()
+fuzzyServoSetPointCalc = fsc.fuzzyServoSetPointChangeCalc()
 
 
 ############################

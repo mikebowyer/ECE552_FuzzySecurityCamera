@@ -1,5 +1,5 @@
 ##################################################
-# Fuzzy C means clustering implementation
+# Servo Controller Class
 ##################################################
 # {License_info}
 ##################################################
@@ -12,9 +12,6 @@
 ## License: {license}
 ## Status: {dev_status}
 ##################################################
-import numpy as np
-import skfuzzy as fuzz
-import matplotlib.pyplot as plt
 import RPi.GPIO as GPIO
 from time import sleep
 
