@@ -41,7 +41,7 @@ def fuzzyClusteringOnImage(inputImage, imgRes):
     bluePixelValues = inputImage[:, :, 2].flatten()
     mydata = np.vstack((redPixelValues, greenPixelValues, bluePixelValues))
     cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
-        mydata, c=numClusters, m=2, error=0.5, maxiter=1000)
+        mydata, c=numClusters, m=2, error=10, maxiter=1000)
 
     # Determine which cluster
     brightestClusterIDs = findBrightestCluster(cntr)
