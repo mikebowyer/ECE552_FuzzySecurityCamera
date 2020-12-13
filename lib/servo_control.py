@@ -65,9 +65,11 @@ class ServoControl:
 
         newHorizAngle = self.limitServoPosition(
             self.horizontalAngle + horiz_seroAngleChange)
-        self.verticalAngle = newVertAngle
+        self.horizontalAngle = newHorizAngle
 
         self.controlServos(newVertAngle, newHorizAngle)
+
+        return self.verticalAngle, self.horizontalAngle
 
     def limitServoPosition(self, inputAngle):
         returnVal = 0

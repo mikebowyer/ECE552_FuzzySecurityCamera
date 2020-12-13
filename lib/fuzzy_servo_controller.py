@@ -20,7 +20,8 @@ from matplotlib.pyplot import plot, draw, show
 
 class fuzzyServoSetPointChangeCalc:
     def __init__(self):
-        self.plotOrNot = True
+        self.plotOrNot = False
+        # self.plotOrNot = True
         self.createhorizontalMembershipFunctions()
 
     def calcChangeInServoAngles(self, vert_pixErrFromCenter, horiz_pixErrFromCenter):
@@ -62,7 +63,8 @@ class fuzzyServoSetPointChangeCalc:
         self.mf_servoAngleChangeHorz_VeryRight = fuzz.trimf(
             self.range_servoAngleChangeHorz, [5, 10, 15])
 
-        if(self.plotOrNot):
+        # if(self.plotOrNot):
+        if(False):
             # Visualize these universes and membership functions
             fig, (ax0, ax1) = plt.subplots(nrows=2)  # , figsize=(8, 9))
 

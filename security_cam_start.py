@@ -70,8 +70,10 @@ for i in range(5):
         vert_pixErrFromCenter, horiz_pixErrFromCenter)
 
     logging.info("Controlling servos to new setpoint")
-    servoController.changeServoPosition(
+    currentVerticalAngle, currentHorizontalAngle = servoController.changeServoPosition(
         vert_servoAngleChange, horiz_seroAngleChange)
+    logging.info("New servo motor positions are \tVertical: {}\tHorizontal:{}".format(
+        currentVerticalAngle, currentHorizontalAngle))
 
     logging.debug("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
