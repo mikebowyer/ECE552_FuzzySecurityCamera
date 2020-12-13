@@ -30,11 +30,8 @@ def fuzzyClusteringOnImage(inputImage, imgRes):
     # colors = ['black', 'orange', 'grey']
 
     # Define three cluster centers and parameters
-    centers = [[0, 0, 0],
-               [122, 122, 122],
-               [255, 255, 255]]
     numClusters = 3
-    maxIter = 100
+    maxIter = 30
 
     redPixelValues = inputImage[:, :, 0].flatten()
     greenPixelValues = inputImage[:, :, 1].flatten()
@@ -53,7 +50,10 @@ def fuzzyClusteringOnImage(inputImage, imgRes):
     pixelClassifiedImage = pixelClassification.reshape(
         imgRes[1], imgRes[0])
 
-    return pixelClassifiedImage, brightestClusterIDs
+    percentPixelsInBrightestClust = np.count_nonzero(
+        pixelClassification == brightestClusterIDs[0][0])/numPixels
+
+    return pixelClassifiedImage, brightestClusterIDs, percentPixelsInBrightestClust
 
 
 def createColorMap(brightestClustIDs):

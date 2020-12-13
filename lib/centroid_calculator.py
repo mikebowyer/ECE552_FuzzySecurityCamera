@@ -19,9 +19,12 @@ import math
 def findBrightClusterCenter(inputImg, brightestClusterID):
     # Grab all x and y coordinates of pixels which contain the #2
     brightPixelCoordinates = np.where(inputImg == brightestClusterID)
-    centroidY = math.floor(brightPixelCoordinates[0].mean())
-    centroidX = math.floor(brightPixelCoordinates[1].mean())
+    centroid_center_vert = math.floor(brightPixelCoordinates[0].mean())
+    centroid_center_horiz = math.floor(brightPixelCoordinates[1].mean())
+
+    centroid_std_vert = math.floor(brightPixelCoordinates[0].std())
+    centroid_std_horiz = math.floor(brightPixelCoordinates[1].std())
 
     # inputImg[centroidY][centroidX] = 4
 
-    return centroidX, centroidY
+    return centroid_center_horiz, centroid_center_vert, centroid_std_horiz, centroid_std_vert

@@ -54,18 +54,18 @@ for i in range(5):
     decodedImg.save('./outputImages/%s_OriginalImage.jpg' % i)
 
     logging.debug("Starting fuzzy c means clustering")
-    clusteredImg, brightestClustIDs = fcm.fuzzyClusteringOnImage(
+    clusteredImg, brightestClustIDs, percentPixelsInBrightestClust = fcm.fuzzyClusteringOnImage(
         imgArray, [img_width, img_height])
 
     logging.debug("Calculating center of brightest cluster")
-    brightClust_x, brightClust_y = cc.findBrightClusterCenter(
+    brightClust_center_horiz, brightClust_center_vert, brightClust_std_horiz, brightClust_std_vert = cc.findBrightClusterCenter(
         clusteredImg, brightestClustIDs[0][0])
     logging.info(
-        "The brightest cluster center is at coordinates: ({},{})".format(brightClust_x, brightClust_y))
+        "The brightest cluster center is at coordinates: ({},{})".format(brightClust_center_horiz, brightClust_center_vert))
 
     logging.debug("Calculating set point for Servos")
-    vert_pixErrFromCenter = brightClust_y - img_center[1]
-    horiz_pixErrFromCenter = brightClust_x - img_center[0]
+    vert_pixErrFromCenter = brightClust_center_vert - img_center[1]
+    horiz_pixErrFromCenter = brightClust_center_horiz - img_center[0]
 
     vert_servoAngleChange, horiz_seroAngleChange = fuzzyServoSetPointCalc.calcChangeInServoAngles(
         vert_pixErrFromCenter, horiz_pixErrFromCenter)
@@ -79,4 +79,4 @@ for i in range(5):
     logging.debug("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
     imgtls.saveClusteredImg(clusteredImg, brightestClustIDs,
-                            imgName, img_center, [brightClust_x, brightClust_y])
+                            imgName, img_center, [brightClust_center_horiz, brightClust_center_vert])
