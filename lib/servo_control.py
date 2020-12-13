@@ -57,3 +57,25 @@ class ServoControl:
     def getDutyFromAngle(self, angle):
         duty = (-angle/18) + 7
         return duty
+
+    def changeServoPosition(self, vert_servoAngleChange, horiz_seroAngleChange):
+        newVertAngle = self.limitServoPosition(
+            self.verticalAngle + vert_servoAngleChange)
+        self.verticalAngle = newVertAngle
+
+        newHorizAngle = self.limitServoPosition(
+            self.horizontalAngle + horiz_seroAngleChange)
+        self.verticalAngle = newVertAngle
+
+        self.controlServos(newVertAngle, newHorizAngle)
+
+    def limitServoPosition(self, inputAngle):
+        returnVal = 0
+        if(inputAngle > 45):
+            returnVal = 45
+        elif(inputAngle < -45):
+            returnVal = -45
+        else:
+            returnVal = inputAngle
+
+        return returnVal

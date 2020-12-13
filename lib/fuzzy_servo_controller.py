@@ -20,12 +20,18 @@ from matplotlib.pyplot import plot, draw, show
 
 class fuzzyServoSetPointChangeCalc:
     def __init__(self):
-
         self.plotOrNot = True
         self.createhorizontalMembershipFunctions()
 
-        self.calcInputMemFuncActivations(-110)
-        self.applyRulesAndDefuzzify()
+    def calcChangeInServoAngles(self, vert_pixErrFromCenter, horiz_pixErrFromCenter):
+        # Vertical
+        # self.calcvertInputMemFuncActivations(vert_pixErrFromCenter)
+        # vert_servoAngleChange = self.applyvertRulesAndDefuzzify()
+        vert_servoAngleChange = 0
+        # Horizontal
+        self.calcHorizInputMemFuncActivations(horiz_pixErrFromCenter)
+        horiz_servoAngleChange = self.applyHorizRulesAndDefuzzify()
+        return vert_servoAngleChange, horiz_servoAngleChange
 
     def createhorizontalMembershipFunctions(self):
         # Generate input and output analog variable ranges
@@ -99,7 +105,7 @@ class fuzzyServoSetPointChangeCalc:
             plt.draw()
             plt.show()
 
-    def calcInputMemFuncActivations(self, pixFromCenterErrHorz):
+    def calcHorizInputMemFuncActivations(self, pixFromCenterErrHorz):
         self.act_pixFromCenterErrHorz_VeryLeft = fuzz.interp_membership(
             self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_VeryLeft, pixFromCenterErrHorz)
         self.act_pixFromCenterErrHorz_Left = fuzz.interp_membership(
@@ -111,7 +117,7 @@ class fuzzyServoSetPointChangeCalc:
         self.act_pixFromCenterErrHorz_VeryRight = fuzz.interp_membership(
             self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_VeryRight, pixFromCenterErrHorz)
 
-    def applyRulesAndDefuzzify(self):
+    def applyHorizRulesAndDefuzzify(self):
         # Rule 1 - If Very Left input, very left output
         act_rule1 = self.act_pixFromCenterErrHorz_VeryLeft
         act_servoAngleChangeHorz_VeryLeft = np.fmin(
@@ -221,3 +227,5 @@ class fuzzyServoSetPointChangeCalc:
             plt.tight_layout()
             plt.draw()
             plt.show()
+
+        return output_servoAngleChangeHorz

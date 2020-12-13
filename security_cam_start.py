@@ -63,10 +63,15 @@ for i in range(5):
         "The brightest cluster center is at coordinates: ({},{})".format(brightClust_x, brightClust_y))
 
     logging.debug("Calculating set point for Servos")
-    x_errorFromCenter = brightClust_x - img_center[0]
-    y_errorFromCenter = brightClust_y - img_center[1]
+    vert_pixErrFromCenter = brightClust_y - img_center[1]
+    horiz_pixErrFromCenter = brightClust_x - img_center[0]
 
-    servoController.controlServos(i*10, i*10)
+    vert_servoAngleChange, horiz_seroAngleChange = fuzzyServoSetPointCalc.calcChangeInServoAngles(
+        vert_pixErrFromCenter, horiz_pixErrFromCenter)
+
+    logging.info("Controlling servos to new setpoint")
+    servoController.changeServoPosition(
+        vert_servoAngleChange, horiz_seroAngleChange)
 
     logging.debug("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
