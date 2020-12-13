@@ -103,3 +103,9 @@ class fuzzyServoSetPointChangeCalc:
             self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_VeryLeft, pixFromCenterErrHorz)
         self.act_pixFromCenterErrHorz_Left = fuzz.interp_membership(
             self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_Left, pixFromCenterErrHorz)
+        self.act_pixFromCenterErrHorz_Center = fuzz.interp_membership(
+            self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_Center, pixFromCenterErrHorz)
+        self.act_pixFromCenterErrHorz_Right = fuzz.interp_membership(
+            self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_Right, pixFromCenterErrHorz)
+        self.act_pixFromCenterErrHorz_VeryRight = fuzz.interp_membership(
+            self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_Left, pixFromCenterErrHorz)
