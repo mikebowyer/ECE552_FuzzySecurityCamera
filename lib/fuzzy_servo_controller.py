@@ -21,15 +21,16 @@ from matplotlib.pyplot import plot, draw, show
 class fuzzyServoSetPointChangeCalc:
     def __init__(self):
 
-        plotOrNot = True
-        self.createhorizontalMembershipFunctions(plotOrNot)
+        self.plotOrNot = True
+        self.createhorizontalMembershipFunctions()
 
-        self.calcInputMemFuncActivations(-160)
+        self.calcInputMemFuncActivations(-110)
+        self.applyRules()
 
-    def createhorizontalMembershipFunctions(self, plotOrNot):
+    def createhorizontalMembershipFunctions(self):
         # Generate input and output analog variable ranges
         self.range_pixFromCenterErrHorz = np.arange(-160, 160, 1)
-        self.range_servoAngleChangeHorz = np.arange(-10, 10, 1)
+        self.range_servoAngleChangeHorz = np.arange(-10, 10, .1)
 
         # Generate fuzzy membership functions for Inputs
         self.mf_pixFromCenterErrHorz_VeryLeft = fuzz.trimf(
@@ -55,7 +56,7 @@ class fuzzyServoSetPointChangeCalc:
         self.mf_servoAngleChangeHorz_VeryRight = fuzz.trimf(
             self.range_servoAngleChangeHorz, [5, 10, 15])
 
-        if(plotOrNot):
+        if(self.plotOrNot):
             # Visualize these universes and membership functions
             fig, (ax0, ax1) = plt.subplots(nrows=2)  # , figsize=(8, 9))
 
@@ -109,3 +110,54 @@ class fuzzyServoSetPointChangeCalc:
             self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_Right, pixFromCenterErrHorz)
         self.act_pixFromCenterErrHorz_VeryRight = fuzz.interp_membership(
             self.range_pixFromCenterErrHorz, self.mf_pixFromCenterErrHorz_Left, pixFromCenterErrHorz)
+
+    def applyRules(self):
+        # Rule 1 - If Very Left input, very left output
+        act_rule1 = self.act_pixFromCenterErrHorz_VeryLeft
+        act_servoAngleChangeHorz_VeryLeft = np.fmin(
+            act_rule1, self.mf_servoAngleChangeHorz_VeryLeft)  # removed entirely to 0
+        # Rule 2 - If Left input, left output
+        act_rule2 = self.act_pixFromCenterErrHorz_Left
+        act_servoAngleChangeHorz_Left = np.fmin(
+            act_rule2, self.mf_servoAngleChangeHorz_Left)  # removed entirely to 0
+        # Rule 3 - If Center input, DontMove output
+        act_rule3 = self.act_pixFromCenterErrHorz_Center
+        act_servoAngleChangeHorz_DontMove = np.fmin(
+            act_rule3, self.mf_servoAngleChangeHorz_DontMove)  # removed entirely to 0
+        # Rule 4 - If right input, right output
+        act_rule4 = self.act_pixFromCenterErrHorz_Right
+        act_servoAngleChangeHorz_Right = np.fmin(
+            act_rule4, self.mf_servoAngleChangeHorz_Right)  # removed entirely to 0
+        # Rule 5 - If Very right input, very right output
+        act_rule5 = self.act_pixFromCenterErrHorz_VeryRight
+        act_servoAngleChangeHorz_VeryRight = np.fmin(
+            act_rule5, self.mf_servoAngleChangeHorz_VeryRight)  # removed entirely to 0
+
+        act_zeros = np.zeros_like(self.range_servoAngleChangeHorz)
+
+        if(self.plotOrNot):
+            # Visualize this
+            fig, ax0 = plt.subplots()
+
+            ax0.fill_between(self.range_servoAngleChangeHorz, act_zeros, act_servoAngleChangeHorz_VeryLeft,
+                             facecolor='b', alpha=0.7)
+            ax0.plot(self.range_servoAngleChangeHorz, self.mf_servoAngleChangeHorz_VeryLeft,
+                     'b', linewidth=0.5, linestyle='--', )
+            # ax0.fill_between(x_tip, tip0, tip_activation_md,
+            #                  facecolor='g', alpha=0.7)
+            # ax0.plot(x_tip, tip_md, 'g', linewidth=0.5, linestyle='--')
+            # ax0.fill_between(x_tip, tip0, tip_activation_hi,
+            #                  facecolor='r', alpha=0.7)
+            # ax0.plot(x_tip, tip_hi, 'r', linewidth=0.5, linestyle='--')
+            # ax0.set_title('Output membership activity')
+
+            # Turn off top/right axes
+            for ax in (ax0,):
+                ax.spines['top'].set_visible(False)
+                ax.spines['right'].set_visible(False)
+                ax.get_xaxis().tick_bottom()
+                ax.get_yaxis().tick_left()
+
+            plt.tight_layout()
+            plt.draw()
+            plt.show()
