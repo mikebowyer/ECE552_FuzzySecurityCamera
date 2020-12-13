@@ -9,8 +9,8 @@
 # Copyright: Copyright {year}, {project_name}
 # Credits:
 # Version: {mayor}.{minor}.{rel}
-## License: {license}
-## Status: {dev_status}
+# License: {license}
+# Status: {dev_status}
 ##################################################
 import numpy as np
 import skfuzzy as fuzz
@@ -20,18 +20,19 @@ from matplotlib.pyplot import plot, draw, show
 
 class fuzzyServoSetPointChangeCalc:
     def __init__(self):
-        self.plotOrNot = False
+        self.plotOrNot = True
         # self.plotOrNot = True
         self.createMembershipFunctions()
 
     def calcChangeInServoAngles(self, vert_pixErrFromCenter, horiz_pixErrFromCenter):
         # Vertical
-        # self.calcvertInputMemFuncActivations(vert_pixErrFromCenter)
-        # vert_servoAngleChange = self.applyvertRulesAndDefuzzify()
-        vert_servoAngleChange = 0
+        self.calcInputMemFuncActivations(vert_pixErrFromCenter)
+        vert_servoAngleChange = self.applyRulesAndDefuzzify(
+            'vertical', vert_pixErrFromCenter)
         # Horizontal
-        self.calcHorizInputMemFuncActivations(horiz_pixErrFromCenter)
-        horiz_servoAngleChange = self.applyHorizRulesAndDefuzzify()
+        self.calcInputMemFuncActivations(horiz_pixErrFromCenter)
+        horiz_servoAngleChange = self.applyRulesAndDefuzzify(
+            'horizontal', horiz_pixErrFromCenter)
         return vert_servoAngleChange, horiz_servoAngleChange
 
     def createMembershipFunctions(self):
@@ -107,7 +108,7 @@ class fuzzyServoSetPointChangeCalc:
             plt.draw()
             plt.show()
 
-    def calcHorizInputMemFuncActivations(self, pixFromCenterErr):
+    def calcInputMemFuncActivations(self, pixFromCenterErr):
         self.act_pixFromCenterErr_VeryLeft = fuzz.interp_membership(
             self.range_pixFromCenterErr, self.mf_pixFromCenterErr_VeryLeft, pixFromCenterErr)
         self.act_pixFromCenterErr_Left = fuzz.interp_membership(
@@ -119,7 +120,7 @@ class fuzzyServoSetPointChangeCalc:
         self.act_pixFromCenterErr_VeryRight = fuzz.interp_membership(
             self.range_pixFromCenterErr, self.mf_pixFromCenterErr_VeryRight, pixFromCenterErr)
 
-    def applyHorizRulesAndDefuzzify(self):
+    def applyRulesAndDefuzzify(self, horizOrVert, pixFromCenter):
         # Rule 1 - If Very Left input, very left output
         act_rule1 = self.act_pixFromCenterErr_VeryLeft
         act_servoAngleChange_VeryLeft = np.fmin(
@@ -176,8 +177,12 @@ class fuzzyServoSetPointChangeCalc:
                              facecolor='r', alpha=0.7)
             ax0.plot(self.range_servoAngleChange, self.mf_servoAngleChange_VeryRight,
                      'r', linewidth=0.5, linestyle='--', )
-            ax0.set_title(
-                'Membership values of output membership functions after rule application')
+            if(horizOrVert == 'vertical'):
+                ax0.set_title(
+                    'Rule application result - Bright cluster center {} pixels from the center vertically'.format(pixFromCenter))
+            else:
+                ax0.set_title(
+                    'Rule application result - Bright cluster center {} pixels from the center horizontally'.format(pixFromCenter))
             # Turn off top/right axes
             for ax in (ax0,):
                 ax.spines['top'].set_visible(False)
@@ -217,7 +222,12 @@ class fuzzyServoSetPointChangeCalc:
                              facecolor='Orange', alpha=0.7)
             ax0.plot([output_servoAngleChange, output_servoAngleChange], [0, output_activation],
                      'k', linewidth=1.5, alpha=0.9)
-            ax0.set_title('Aggregated membership and result (line)')
+            if(horizOrVert == 'vertical'):
+                ax0.set_title(
+                    'Defuzzification result- Bright cluster center {} pixels from the center vertically'.format(pixFromCenter))
+            else:
+                ax0.set_title(
+                    'Defuzzification result- Bright cluster center {} pixels from the center horizontally'.format(pixFromCenter))
 
             # Turn off top/right axes
             for ax in (ax0,):
