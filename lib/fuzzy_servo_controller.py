@@ -37,7 +37,7 @@ class fuzzyServoSetPointChangeCalc:
     def createhorizontalMembershipFunctions(self):
         # Generate input and output analog variable ranges
         self.range_pixFromCenterErrHorz = np.arange(-160, 160, 1)
-        self.range_servoAngleChangeHorz = np.arange(-10, 10, .1)
+        self.range_servoAngleChangeHorz = np.arange(-25, 25, .1)
 
         # Generate fuzzy membership functions for Inputs
         self.mf_pixFromCenterErrHorz_VeryLeft = fuzz.trimf(
@@ -53,15 +53,15 @@ class fuzzyServoSetPointChangeCalc:
 
         # Generate fuzzy membership functions for Output
         self.mf_servoAngleChangeHorz_VeryLeft = fuzz.trimf(
-            self.range_servoAngleChangeHorz, [-15, -10, -5])
+            self.range_servoAngleChangeHorz, [-35, -25, -12.5])
         self.mf_servoAngleChangeHorz_Left = fuzz.trimf(
-            self.range_servoAngleChangeHorz, [-10, -5, 0])
+            self.range_servoAngleChangeHorz, [-25, -12.5, 0])
         self.mf_servoAngleChangeHorz_DontMove = fuzz.trimf(
-            self.range_servoAngleChangeHorz, [-5, 0, 5])
+            self.range_servoAngleChangeHorz, [-12.5, 0, 12.5])
         self.mf_servoAngleChangeHorz_Right = fuzz.trimf(
-            self.range_servoAngleChangeHorz, [0, 5, 10])
+            self.range_servoAngleChangeHorz, [0, 12.5, 25])
         self.mf_servoAngleChangeHorz_VeryRight = fuzz.trimf(
-            self.range_servoAngleChangeHorz, [5, 10, 15])
+            self.range_servoAngleChangeHorz, [12.5, 25, 35])
 
         # if(self.plotOrNot):
         if(False):

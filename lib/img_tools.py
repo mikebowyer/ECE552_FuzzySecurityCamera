@@ -42,9 +42,10 @@ def saveClusteredImg(img, brightestClustIDs, fileName, imgCenter, brightClustCen
     # save image
     plt.savefig(fileName, bbox_inches='tight')
 
+
 def capturePic(cam):
     ret = 0
     image = 0
-    for i in range(0, 5):
+    for i in range(0, 10):
         ret, image = cam.read()
     return ret, image
