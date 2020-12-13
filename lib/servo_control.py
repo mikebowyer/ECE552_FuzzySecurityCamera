@@ -19,7 +19,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 
-class fuzzyServoControl:
+class ServoControl:
 
     def __init__(self):
         self.verticalGPIONum = 11
@@ -34,15 +34,18 @@ class fuzzyServoControl:
         self.horizServo.start(0)
         self.vertServo.start(0)
 
-        self.horizontalAngle = 45
-        self.verticalAngle = 45
+        self.horizontalAngle = 0
+        self.verticalAngle = 0
         self.controlling = 'horizontal'
 
         self.controlServos(
-            self.getDutyFromAngle(self.verticalAngle),
-            self.getDutyFromAngle(self.horizontalAngle))
+            self.verticalAngle,
+            self.horizontalAngle)
 
-    def controlServos(self, verticalDuty, horizontalDuty):
+    def controlServos(self, vertAngle, horizAngle):
+        verticalDuty = self.getDutyFromAngle(vertAngle)
+        horizontalDuty = self.getDutyFromAngle(horizAngle)
+
         GPIO.output(self.verticalGPIONum, True)
         GPIO.output(self.horizontalGPIONum, True)
 

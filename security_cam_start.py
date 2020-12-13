@@ -11,7 +11,7 @@ import logging
 from lib import fuzzy_clustering as fcm
 from lib import centroid_calculator as cc
 from lib import img_tools as imgtls
-from lib import fuzzy_servo_control as fsc
+from lib import servo_control as fsc
 
 ############################
 ### Setup logging config ###
@@ -24,7 +24,7 @@ logging.getLogger('matplotlib.font_manager').disabled = True
 ############################
 ### Setup logging config ###
 ############################
-servoController = fsc.fuzzyServoControl()
+servoController = fsc.ServoControl()
 
 
 ############################
@@ -63,6 +63,8 @@ for i in range(5):
     logging.debug("Calculating set point for Servos")
     x_errorFromCenter = brightClust_x - img_center[0]
     y_errorFromCenter = brightClust_y - img_center[1]
+
+    servoController.controlServos(i*10, i*10)
 
     logging.debug("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i

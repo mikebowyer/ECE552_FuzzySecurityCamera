@@ -1,0 +1,5 @@
+Horizontal motor has a -5 offset to get to real 0
+
+
+#take image with webcam
+fswebcam -S 10 -d /dev/video1 image.jpg

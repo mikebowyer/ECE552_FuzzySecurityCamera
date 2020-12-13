@@ -11,6 +11,7 @@ def controlServo(servo, gpiopin, duty):
     GPIO.output(11, True)
     GPIO.output(13, True)
     servo.ChangeDutyCycle(duty)
+    sleep(.5)
     GPIO.output(11, False)
     GPIO.output(13, False)
     servo.ChangeDutyCycle(0)
