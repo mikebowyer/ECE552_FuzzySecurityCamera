@@ -19,9 +19,9 @@ from matplotlib.pyplot import plot, draw, show
 
 
 class fuzzyServoSetPointChangeCalc:
-    def __init__(self):
-        self.plotOrNot = True
-        self.saveOrNot = True
+    def __init__(self, saveFuzzImg, showFuzzImg):
+        self.plotOrNot = showFuzzImg
+        self.saveOrNot = saveFuzzImg
         self.saveFilePath = "./outputImages/fuzzyOutputs/"
         # self.plotOrNot = True
         self.createMembershipFunctions()
@@ -87,7 +87,7 @@ class fuzzyServoSetPointChangeCalc:
             self.range_servoAngleChange, [12.5, 25, 35])
 
         # if(self.plotOrNot):
-        if(False):
+        if(self.saveOrNot):
             # Visualize these universes and membership functions
             fig, (ax0, ax1) = plt.subplots(nrows=2)  # , figsize=(8, 9))
 
@@ -125,12 +125,17 @@ class fuzzyServoSetPointChangeCalc:
                 ax.spines['right'].set_visible(False)
                 ax.get_xaxis().tick_bottom()
                 ax.get_yaxis().tick_left()
+                ax.set_xlabel(
+                    "Output Variable - Change in camera vertical/horizontal angle (Degrees)")
+                ax.set_ylabel(
+                    "Membership Amount")
 
             plt.tight_layout()
-            plt.draw()
-            plt.show()
+            # plt.draw()
+            # plt.show()
             if(self.saveOrNot):
-                plt.savefig(self.saveFilePath + fileName, bbox_inches='tight')
+                plt.savefig(self.saveFilePath +
+                            "OutputMembershipFunction", bbox_inches='tight')
 
     def calcInputMemFuncActivations(self, pixFromCenterErr, brightClust_std, percentPixelsInBrightestClust):
         # Pixel-From-Center-Error

@@ -7,12 +7,32 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.patches as mpatches
 import logging
+import argparse
 # Internal Library Imports
 from lib import fuzzy_clustering as fcm
 from lib import centroid_calculator as cc
 from lib import img_tools as imgtls
 from lib import servo_control as servoControl
 from lib import fuzzy_servo_controller as fsc
+
+############################
+### Argument Parsing ###
+############################
+parser = argparse.ArgumentParser(
+    description='Run the fuzzy security system designed for ECE 552')
+# Add the arguments
+parser.add_argument('--saveImages', action='store_true',
+                    help='Save images captured and their clustered results')
+parser.add_argument('--showImages', action='store_true',
+                    help='Show images captured and their clustered results on the screen')
+parser.add_argument('--saveFuzzyImages', action='store_true',
+                    help='Save all fuzzy related plots')
+parser.add_argument('--showFuzzyImages', action='store_true',
+                    help='Show all fuzzy related plots on the screen')
+parser.add_argument('--stopEachImg', action='store_true',
+                    help='Interupt. If true, then the program will be interupted and wait for user input after each image is taken.')
+args = parser.parse_args()
+
 
 ############################
 ### Setup logging config ###
@@ -27,18 +47,20 @@ logging.getLogger('matplotlib.font_manager').disabled = True
 # Setup Servo Controller and set point calculator
 ############################
 servoController = servoControl.ServoControl()
-fuzzyServoSetPointCalc = fsc.fuzzyServoSetPointChangeCalc()
+fuzzyServoSetPointCalc = fsc.fuzzyServoSetPointChangeCalc(
+    args.saveFuzzyImages, args.showFuzzyImages)
 
 
 ############################
 # Setup Plotting
 ############################
-plt.ion()
-saveImages = False
-showImages = True
-if(showImages):
+if(args.showImages):
+    # Go interactive, and start new figures
+    plt.ion()
     plt.figure("1) Original Image")
     plt.figure("2) Clustered Image")
+saveImages = False
+showImages = True
 
 ############################
 # Camera Parametesr and Initialization
@@ -62,10 +84,10 @@ for i in range(500):
 
     logging.debug("Saving Original Image")
     decodedImg = Image.fromarray(imgArray)
-    if(saveImages):
+    if(args.saveImages):
         decodedImg.save('./outputImages/%s_OriginalImage.jpg' % i)
 
-    if(showImages):
+    if(args.showImages):
         plt.figure("1) Original Image")
         plt.cla()
         plt.title('Original Image')
@@ -99,7 +121,8 @@ for i in range(500):
     logging.debug("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
     imgtls.saveClusteredImg(clusteredImg, brightestClustIDs,
-                            imgName, img_center, [brightClust_center_horiz, brightClust_center_vert], saveImages, showImages)
+                            imgName, img_center, [brightClust_center_horiz, brightClust_center_vert], args.saveImages, args.showImages)
 
-    usrinput = input(
-        "Hit Enter when you are ready to move on to the next image")
+    if(args.stopEachImg):
+        usrinput = input(
+            "Hit Enter when you are ready to move on to the next image")
