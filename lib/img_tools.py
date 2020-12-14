@@ -5,12 +5,14 @@ import matplotlib.patches as mpatches
 from lib import fuzzy_clustering as fcm
 
 
-def saveClusteredImg(img, brightestClustIDs, fileName, imgCenter, brightClustCenter):
+def saveClusteredImg(img, brightestClustIDs, fileName, imgCenter, brightClustCenter, saveImg, showImg):
     # Establish color map
     colorMap = fcm.createColorMap(brightestClustIDs)
 
+    plt.figure("Clustered Image")
     # Create image to save
-    fig, ax = plt.subplots(1)
+    ax = plt.gca()
+    plt.cla()
     ax.imshow(img, cmap=colorMap)
     clusterCenterCircle = patches.Circle((brightClustCenter[0], brightClustCenter[1]), 4, linewidth=1,
                                          edgecolor='r', facecolor='r', label="Bright cluster center")
@@ -40,7 +42,12 @@ def saveClusteredImg(img, brightestClustIDs, fileName, imgCenter, brightClustCen
     # Manually add the first legend back
     ax.add_artist(legend1)
     # save image
-    plt.savefig(fileName, bbox_inches='tight')
+    if(saveImg):
+        plt.savefig(fileName, bbox_inches='tight')
+    if(showImg):
+        # plt.figure("Clustered Image")
+        plt.draw()
+        plt.pause(0.001)
 
 
 def capturePic(cam):

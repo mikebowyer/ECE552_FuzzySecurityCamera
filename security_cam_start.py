@@ -30,6 +30,16 @@ fuzzyServoSetPointCalc = fsc.fuzzyServoSetPointChangeCalc()
 
 
 ############################
+# Setup Plotting
+############################
+plt.ion()
+saveImages = False
+showImages = True
+if(showImages):
+    plt.figure("Clustered Image")
+    plt.figure("Original Image")
+
+############################
 # Camera Parametesr and Initialization
 ############################
 logging.info("Initializing Camera")
@@ -51,7 +61,14 @@ for i in range(5):
 
     logging.debug("Saving Original Image")
     decodedImg = Image.fromarray(imgArray)
-    decodedImg.save('./outputImages/%s_OriginalImage.jpg' % i)
+    if(saveImages):
+        decodedImg.save('./outputImages/%s_OriginalImage.jpg' % i)
+
+    if(showImages):
+        plt.figure("Original Image")
+        plt.imshow(decodedImg)
+        plt.draw()
+        plt.pause(0.001)
 
     logging.debug("Starting fuzzy c means clustering")
     clusteredImg, brightestClustIDs, percentPixelsInBrightestClust = fcm.fuzzyClusteringOnImage(
@@ -79,4 +96,4 @@ for i in range(5):
     logging.debug("Saving Segmented Image")
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
     imgtls.saveClusteredImg(clusteredImg, brightestClustIDs,
-                            imgName, img_center, [brightClust_center_horiz, brightClust_center_vert])
+                            imgName, img_center, [brightClust_center_horiz, brightClust_center_vert], saveImages, showImages)
