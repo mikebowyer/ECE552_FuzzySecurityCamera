@@ -20,7 +20,7 @@ from matplotlib.pyplot import plot, draw, show
 
 class fuzzyServoSetPointChangeCalc:
     def __init__(self):
-        self.plotOrNot = False
+        self.plotOrNot = True
         # self.plotOrNot = True
         self.createMembershipFunctions()
 
@@ -178,12 +178,28 @@ class fuzzyServoSetPointChangeCalc:
         act_rule5 = self.act_pixFromCenterErr_VeryRight
         act_servoAngleChange_VeryRight = np.fmin(
             act_rule5, self.mf_servoAngleChange_VeryRight)
+        # Rule 6 - If Too Many Pixels OR High Pixel Standard deviation, Don't Move (Weight of 1)
+        act_rule6 = np.fmax(self.act_pctPixBright_TooMany,
+                            self.act_brightClustStd_High)
+        act_servoAngleChange_DontMove_2 = np.fmin(
+            act_rule6, self.mf_servoAngleChange_DontMove)
+
+        # Rule 7 - If Many Pixels OR Medium Pixel Standard deviation, Don't Move (Weight of .5)
+        act_rule7 = np.fmax(self.act_pctPixBright_Many,
+                            self.act_brightClustStd_Med)*.5
+        act_servoAngleChange_DontMove_3 = np.fmin(
+            act_rule7, self.mf_servoAngleChange_DontMove)
 
         act_zeros = np.zeros_like(self.range_servoAngleChange)
 
         if(self.plotOrNot):
             # Visualize this
-            fig, ax0 = plt.subplots()
+            if(horizOrVert == 'vertical'):
+                plt.figure("3a) Vertical Axis Rule Application Result")
+            else:
+                plt.figure("3b) Horizontal Axis Rule Application Result")
+            ax0 = plt.gca()
+            plt.cla()
 
             # Plot Very Left Output Membership Values
             ax0.fill_between(self.range_servoAngleChange, act_zeros, act_servoAngleChange_VeryLeft,
@@ -198,7 +214,9 @@ class fuzzyServoSetPointChangeCalc:
                      'c', linewidth=0.5, linestyle='--', )
 
             # Plot Dont Move Output Membership Values
-            ax0.fill_between(self.range_servoAngleChange, act_zeros, act_servoAngleChange_DontMove,
+            act_servoAngleChange_max = np.fmax(act_servoAngleChange_DontMove, np.fmax(
+                act_servoAngleChange_DontMove_2, act_servoAngleChange_DontMove_3))
+            ax0.fill_between(self.range_servoAngleChange, act_zeros, act_servoAngleChange_max,
                              facecolor='g', alpha=0.7)
             ax0.plot(self.range_servoAngleChange, self.mf_servoAngleChange_DontMove,
                      'g', linewidth=0.5, linestyle='--', )
@@ -216,10 +234,10 @@ class fuzzyServoSetPointChangeCalc:
                      'r', linewidth=0.5, linestyle='--', )
             if(horizOrVert == 'vertical'):
                 ax0.set_title(
-                    'Rule application result - Bright cluster center {} pixels from the center vertically'.format(pixFromCenter))
+                    'Rule application result - \nBright cluster center {} pixels from the center vertically'.format(pixFromCenter))
             else:
                 ax0.set_title(
-                    'Rule application result - Bright cluster center {} pixels from the center horizontally'.format(pixFromCenter))
+                    'Rule application result - \nBright cluster center {} pixels from the center horizontally'.format(pixFromCenter))
             # Turn off top/right axes
             for ax in (ax0,):
                 ax.spines['top'].set_visible(False)
@@ -229,11 +247,11 @@ class fuzzyServoSetPointChangeCalc:
 
             plt.tight_layout()
             plt.draw()
-            plt.show()
+            plt.pause(0.001)
 
         # Defuzzify
         aggregated = np.fmax(act_servoAngleChange_VeryLeft, np.fmax(act_servoAngleChange_Left, np.fmax(
-            act_servoAngleChange_DontMove, np.fmax(act_servoAngleChange_Right, act_servoAngleChange_VeryRight))))
+            act_servoAngleChange_DontMove, np.fmax(act_servoAngleChange_Right, np.fmax(act_servoAngleChange_VeryRight, np.fmax(act_servoAngleChange_DontMove_2, act_servoAngleChange_DontMove_3))))))
 
         output_servoAngleChange = fuzz.defuzz(self.range_servoAngleChange,
                                               aggregated, 'centroid')
@@ -241,9 +259,12 @@ class fuzzyServoSetPointChangeCalc:
         if(self.plotOrNot):
             output_activation = fuzz.interp_membership(
                 self.range_servoAngleChange, aggregated, output_servoAngleChange)  # for plot
-
-            # Visualize this
-            fig, ax0 = plt.subplots()
+            if(horizOrVert == 'vertical'):
+                plt.figure("4a) Vertical Axis Defuzzification Result")
+            else:
+                plt.figure("4b) Horizontal Axis Defuzzification Result")
+            ax0 = plt.gca()
+            plt.cla()
 
             ax0.plot(self.range_servoAngleChange, self.mf_servoAngleChange_VeryLeft,
                      'b', linewidth=0.5, linestyle='--', )
@@ -261,10 +282,10 @@ class fuzzyServoSetPointChangeCalc:
                      'k', linewidth=1.5, alpha=0.9)
             if(horizOrVert == 'vertical'):
                 ax0.set_title(
-                    'Defuzzification result- Bright cluster center {} pixels from the center vertically'.format(pixFromCenter))
+                    'Defuzzification result - \nBright cluster center {} pixels from the center vertically'.format(pixFromCenter))
             else:
                 ax0.set_title(
-                    'Defuzzification result- Bright cluster center {} pixels from the center horizontally'.format(pixFromCenter))
+                    'Defuzzification result - \nBright cluster center {} pixels from the center horizontally'.format(pixFromCenter))
 
             # Turn off top/right axes
             for ax in (ax0,):

@@ -37,8 +37,8 @@ plt.ion()
 saveImages = False
 showImages = True
 if(showImages):
-    plt.figure("Clustered Image")
-    plt.figure("Original Image")
+    plt.figure("1) Original Image")
+    plt.figure("2) Clustered Image")
 
 ############################
 # Camera Parametesr and Initialization
@@ -66,7 +66,9 @@ for i in range(500):
         decodedImg.save('./outputImages/%s_OriginalImage.jpg' % i)
 
     if(showImages):
-        plt.figure("Original Image")
+        plt.figure("1) Original Image")
+        plt.cla()
+        plt.title('Original Image')
         plt.imshow(decodedImg)
         plt.draw()
         plt.pause(0.001)
@@ -98,3 +100,5 @@ for i in range(500):
     imgName = './outputImages/%s_ClusteredImage.jpg' % i
     imgtls.saveClusteredImg(clusteredImg, brightestClustIDs,
                             imgName, img_center, [brightClust_center_horiz, brightClust_center_vert], saveImages, showImages)
+
+    usrinput = input("Angle you want servos at (p = +5 deg, l = -5 deg): ")

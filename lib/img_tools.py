@@ -9,7 +9,7 @@ def saveClusteredImg(img, brightestClustIDs, fileName, imgCenter, brightClustCen
     # Establish color map
     colorMap = fcm.createColorMap(brightestClustIDs)
 
-    plt.figure("Clustered Image")
+    plt.figure("2) Clustered Image")
     # Create image to save
     ax = plt.gca()
     plt.cla()
@@ -45,7 +45,8 @@ def saveClusteredImg(img, brightestClustIDs, fileName, imgCenter, brightClustCen
     if(saveImg):
         plt.savefig(fileName, bbox_inches='tight')
     if(showImg):
-        # plt.figure("Clustered Image")
+        # plt.figure("2) Clustered Image")
+        plt.tight_layout()
         plt.draw()
         plt.pause(0.001)
 
