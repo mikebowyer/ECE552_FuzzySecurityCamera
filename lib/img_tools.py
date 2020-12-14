@@ -1,3 +1,13 @@
+##################################################
+# Tools used to capture images and save them
+##################################################
+# GNU GENERAL PUBLIC LICENSE
+##################################################
+# Author: Michael Bowyer
+# Maintainer: Michael Bowyer
+# Email: mbowyer@umich.edu
+# License: GNU GENERAL PUBLIC LICENSE
+##################################################
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches

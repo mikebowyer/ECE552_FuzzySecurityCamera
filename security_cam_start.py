@@ -1,3 +1,14 @@
+##################################################
+# Centroid Calculation of fuzzy clustered image
+##################################################
+# GNU GENERAL PUBLIC LICENSE
+##################################################
+# Author: Michael Bowyer
+# Maintainer: Michael Bowyer
+# Email: mbowyer@umich.edu
+# License: GNU GENERAL PUBLIC LICENSE
+##################################################
+
 # External Library Imports
 import cv2
 import numpy as np

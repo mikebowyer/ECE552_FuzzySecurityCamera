@@ -1,17 +1,14 @@
 ##################################################
-# Servo Controller Class
+# Library to control two servo motors (horizontal and vertical)
 ##################################################
-# {License_info}
+# GNU GENERAL PUBLIC LICENSE
 ##################################################
 # Author: Michael Bowyer
 # Maintainer: Michael Bowyer
 # Email: mbowyer@umich.edu
-# Copyright: Copyright {year}, {project_name}
-# Credits:
-# Version: {mayor}.{minor}.{rel}
-## License: {license}
-## Status: {dev_status}
+# License: GNU GENERAL PUBLIC LICENSE
 ##################################################
+
 import RPi.GPIO as GPIO
 from time import sleep
 

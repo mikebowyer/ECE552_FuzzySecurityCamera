@@ -1,17 +1,14 @@
 ##################################################
-# Fuzzy C means clustering implementation
+# Fuzzy C means clustering on a webcam image
 ##################################################
-# {License_info}
+# GNU GENERAL PUBLIC LICENSE
 ##################################################
 # Author: Michael Bowyer
 # Maintainer: Michael Bowyer
 # Email: mbowyer@umich.edu
-# Copyright: Copyright {year}, {project_name}
-# Credits:
-# Version: {mayor}.{minor}.{rel}
-## License: {license}
-## Status: {dev_status}
+# License: GNU GENERAL PUBLIC LICENSE
 ##################################################
+
 import numpy as np
 import skfuzzy as fuzz
 from matplotlib import colors
