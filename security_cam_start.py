@@ -101,4 +101,5 @@ for i in range(500):
     imgtls.saveClusteredImg(clusteredImg, brightestClustIDs,
                             imgName, img_center, [brightClust_center_horiz, brightClust_center_vert], saveImages, showImages)
 
-    usrinput = input("Angle you want servos at (p = +5 deg, l = -5 deg): ")
+    usrinput = input(
+        "Hit Enter when you are ready to move on to the next image")

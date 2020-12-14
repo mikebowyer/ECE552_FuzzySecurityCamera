@@ -21,6 +21,8 @@ from matplotlib.pyplot import plot, draw, show
 class fuzzyServoSetPointChangeCalc:
     def __init__(self):
         self.plotOrNot = True
+        self.saveOrNot = True
+        self.saveFilePath = "./outputImages/fuzzyOutputs/"
         # self.plotOrNot = True
         self.createMembershipFunctions()
 
@@ -127,6 +129,8 @@ class fuzzyServoSetPointChangeCalc:
             plt.tight_layout()
             plt.draw()
             plt.show()
+            if(self.saveOrNot):
+                plt.savefig(self.saveFilePath + fileName, bbox_inches='tight')
 
     def calcInputMemFuncActivations(self, pixFromCenterErr, brightClust_std, percentPixelsInBrightestClust):
         # Pixel-From-Center-Error
@@ -192,12 +196,15 @@ class fuzzyServoSetPointChangeCalc:
 
         act_zeros = np.zeros_like(self.range_servoAngleChange)
 
-        if(self.plotOrNot):
+        if(self.plotOrNot or self.saveOrNot):
             # Visualize this
+            fileName = " "
             if(horizOrVert == 'vertical'):
                 plt.figure("3a) Vertical Axis Rule Application Result")
+                fileName = "3a) Vertical Axis Rule Application Result"
             else:
                 plt.figure("3b) Horizontal Axis Rule Application Result")
+                fileName = "3b) Horizontal Axis Rule Application Result"
             ax0 = plt.gca()
             plt.cla()
 
@@ -232,12 +239,16 @@ class fuzzyServoSetPointChangeCalc:
                              facecolor='r', alpha=0.7)
             ax0.plot(self.range_servoAngleChange, self.mf_servoAngleChange_VeryRight,
                      'r', linewidth=0.5, linestyle='--', )
+
+            titleStr = " "
             if(horizOrVert == 'vertical'):
-                ax0.set_title(
-                    'Rule application result - \nBright cluster center {} pixels from the center vertically'.format(pixFromCenter))
+                titleStr = 'Rule application result - \nBright cluster center {} pixels from the center vertically'.format(
+                    pixFromCenter)
             else:
-                ax0.set_title(
-                    'Rule application result - \nBright cluster center {} pixels from the center horizontally'.format(pixFromCenter))
+                titleStr = 'Rule application result - \nBright cluster center {} pixels from the center horizontally'.format(
+                    pixFromCenter)
+
+            ax0.set_title(titleStr)
             # Turn off top/right axes
             for ax in (ax0,):
                 ax.spines['top'].set_visible(False)
@@ -245,9 +256,13 @@ class fuzzyServoSetPointChangeCalc:
                 ax.get_xaxis().tick_bottom()
                 ax.get_yaxis().tick_left()
 
-            plt.tight_layout()
-            plt.draw()
-            plt.pause(0.001)
+            if(self.saveOrNot):
+                plt.savefig(self.saveFilePath + fileName,
+                            bbox_inches='tight')
+            if(self.plotOrNot):
+                plt.tight_layout()
+                plt.draw()
+                plt.pause(0.001)
 
         # Defuzzify
         aggregated = np.fmax(act_servoAngleChange_VeryLeft, np.fmax(act_servoAngleChange_Left, np.fmax(
@@ -259,10 +274,13 @@ class fuzzyServoSetPointChangeCalc:
         if(self.plotOrNot):
             output_activation = fuzz.interp_membership(
                 self.range_servoAngleChange, aggregated, output_servoAngleChange)  # for plot
+            fileName = " "
             if(horizOrVert == 'vertical'):
                 plt.figure("4a) Vertical Axis Defuzzification Result")
+                fileName = "4a) Vertical Axis Defuzzification Result"
             else:
                 plt.figure("4b) Horizontal Axis Defuzzification Result")
+                fileName = "4b) Horizontal Axis Defuzzification Result"
             ax0 = plt.gca()
             plt.cla()
 
@@ -294,8 +312,12 @@ class fuzzyServoSetPointChangeCalc:
                 ax.get_xaxis().tick_bottom()
                 ax.get_yaxis().tick_left()
 
-            plt.tight_layout()
-            plt.draw()
-            plt.show()
+            if(self.saveOrNot):
+                plt.savefig(self.saveFilePath + fileName,
+                            bbox_inches='tight')
+            if(self.plotOrNot):
+                plt.tight_layout()
+                plt.draw()
+                plt.pause(0.001)
 
         return output_servoAngleChange
