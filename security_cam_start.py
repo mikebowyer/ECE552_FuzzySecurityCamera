@@ -86,7 +86,7 @@ for i in range(500):
     horiz_pixErrFromCenter = brightClust_center_horiz - img_center[0]
 
     vert_servoAngleChange, horiz_seroAngleChange = fuzzyServoSetPointCalc.calcChangeInServoAngles(
-        vert_pixErrFromCenter, horiz_pixErrFromCenter)
+        vert_pixErrFromCenter, horiz_pixErrFromCenter, brightClust_std_horiz, brightClust_std_vert, percentPixelsInBrightestClust)
 
     logging.info("Controlling servos to new setpoint")
     currentVerticalAngle, currentHorizontalAngle = servoController.changeServoPosition(

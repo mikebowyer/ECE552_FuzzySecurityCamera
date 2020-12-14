@@ -24,13 +24,15 @@ class fuzzyServoSetPointChangeCalc:
         # self.plotOrNot = True
         self.createMembershipFunctions()
 
-    def calcChangeInServoAngles(self, vert_pixErrFromCenter, horiz_pixErrFromCenter):
+    def calcChangeInServoAngles(self, vert_pixErrFromCenter, horiz_pixErrFromCenter, brightClust_std_horiz, brightClust_std_vert, percentPixelsInBrightestClust):
         # Vertical
-        self.calcInputMemFuncActivations(vert_pixErrFromCenter)
+        self.calcInputMemFuncActivations(
+            vert_pixErrFromCenter, brightClust_std_vert, percentPixelsInBrightestClust)
         vert_servoAngleChange = self.applyRulesAndDefuzzify(
             'vertical', vert_pixErrFromCenter)
         # Horizontal
-        self.calcInputMemFuncActivations(horiz_pixErrFromCenter)
+        self.calcInputMemFuncActivations(
+            horiz_pixErrFromCenter, brightClust_std_horiz, percentPixelsInBrightestClust)
         horiz_servoAngleChange = self.applyRulesAndDefuzzify(
             'horizontal', horiz_pixErrFromCenter)
         return vert_servoAngleChange, horiz_servoAngleChange
@@ -38,9 +40,11 @@ class fuzzyServoSetPointChangeCalc:
     def createMembershipFunctions(self):
         # Generate input and output analog variable ranges
         self.range_pixFromCenterErr = np.arange(-160, 160, 1)
+        self.range_brightClustStd = np.arange(0, 160, 1)
+        self.range_brightClustPixPct = np.arange(0, 100, 1)
         self.range_servoAngleChange = np.arange(-25, 25, .1)
 
-        # Generate fuzzy membership functions for Inputs
+        # Pixel-From-Center-Error - Generate fuzzy membership functions for Variable
         self.mf_pixFromCenterErr_VeryLeft = fuzz.trimf(
             self.range_pixFromCenterErr, [-240, -160, -96.1])
         self.mf_pixFromCenterErr_Left = fuzz.trimf(
@@ -51,6 +55,22 @@ class fuzzyServoSetPointChangeCalc:
             self.range_pixFromCenterErr, [0, 80, 160])
         self.mf_pixFromCenterErr_VeryRight = fuzz.trimf(
             self.range_pixFromCenterErr, [80, 160, 240])
+
+        #  Percent-Of-Pixels-In-Brightest-Cluster - Generate fuzzy membership functions for Variable
+        self.mf_pctPixBright_Few = fuzz.trapmf(
+            self.range_brightClustPixPct,  [-20, 0, 20, 40])
+        self.mf_pctPixBright_Many = fuzz.trapmf(
+            self.range_brightClustPixPct,  [20, 40, 60, 80])
+        self.mf_pctPixBright_TooMany = fuzz.trapmf(
+            self.range_brightClustPixPct,  [60, 80, 100, 120])
+
+        #   Brightest-Cluster-Standard-Deviation - Generate fuzzy membership functions for Variable
+        self.mf_brightClustStd_Low = fuzz.trapmf(
+            self.range_brightClustStd,  [-20, 0, 32, 64])
+        self.mf_brightClustStd_Med = fuzz.trapmf(
+            self.range_brightClustStd,  [32, 64, 96, 128])
+        self.mf_brightClustStd_High = fuzz.trapmf(
+            self.range_brightClustStd,  [96, 128, 160, 220])
 
         # Generate fuzzy membership functions for Output
         self.mf_servoAngleChange_VeryLeft = fuzz.trimf(
@@ -108,7 +128,8 @@ class fuzzyServoSetPointChangeCalc:
             plt.draw()
             plt.show()
 
-    def calcInputMemFuncActivations(self, pixFromCenterErr):
+    def calcInputMemFuncActivations(self, pixFromCenterErr, brightClust_std, percentPixelsInBrightestClust):
+        # Pixel-From-Center-Error
         self.act_pixFromCenterErr_VeryLeft = fuzz.interp_membership(
             self.range_pixFromCenterErr, self.mf_pixFromCenterErr_VeryLeft, pixFromCenterErr)
         self.act_pixFromCenterErr_Left = fuzz.interp_membership(
@@ -119,6 +140,22 @@ class fuzzyServoSetPointChangeCalc:
             self.range_pixFromCenterErr, self.mf_pixFromCenterErr_Right, pixFromCenterErr)
         self.act_pixFromCenterErr_VeryRight = fuzz.interp_membership(
             self.range_pixFromCenterErr, self.mf_pixFromCenterErr_VeryRight, pixFromCenterErr)
+
+        # Percent-Of-Pixels-In-Brightest-Cluster
+        self.act_pctPixBright_Few = fuzz.interp_membership(
+            self.range_brightClustPixPct, self.mf_pctPixBright_Few, percentPixelsInBrightestClust)
+        self.act_pctPixBright_Many = fuzz.interp_membership(
+            self.range_brightClustPixPct, self.mf_pctPixBright_Many, percentPixelsInBrightestClust)
+        self.act_pctPixBright_TooMany = fuzz.interp_membership(
+            self.range_brightClustPixPct, self.mf_pctPixBright_TooMany, percentPixelsInBrightestClust)
+
+        # Brightest-Cluster-Standard-Deviation
+        self.act_brightClustStd_Low = fuzz.interp_membership(
+            self.range_brightClustStd, self.mf_brightClustStd_Low, brightClust_std)
+        self.act_brightClustStd_Med = fuzz.interp_membership(
+            self.range_brightClustStd, self.mf_brightClustStd_Med, brightClust_std)
+        self.act_brightClustStd_High = fuzz.interp_membership(
+            self.range_brightClustStd, self.mf_brightClustStd_High, brightClust_std)
 
     def applyRulesAndDefuzzify(self, horizOrVert, pixFromCenter):
         # Rule 1 - If Very Left input, very left output
