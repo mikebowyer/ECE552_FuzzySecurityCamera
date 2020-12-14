@@ -31,14 +31,14 @@ def fuzzyClusteringOnImage(inputImage, imgRes):
 
     # Define three cluster centers and parameters
     numClusters = 3
-    maxIter = 30
+    maxIter = 100
 
     redPixelValues = inputImage[:, :, 0].flatten()
     greenPixelValues = inputImage[:, :, 1].flatten()
     bluePixelValues = inputImage[:, :, 2].flatten()
     mydata = np.vstack((redPixelValues, greenPixelValues, bluePixelValues))
     cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
-        mydata, c=numClusters, m=2, error=10, maxiter=1000)
+        mydata, c=numClusters, m=2, error=5, maxiter=maxIter)
 
     # Determine which cluster
     brightestClusterIDs = findBrightestCluster(cntr)

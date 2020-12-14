@@ -19,7 +19,8 @@ from lib import fuzzy_servo_controller as fsc
 ############################
 logging.basicConfig(
     format='[%(levelname)s\t%(asctime)s] %(message)s', datefmt='%I:%M:%S')
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
+# logging.getLogger().setLevel(logging.DEBUG)
 logging.getLogger('matplotlib.font_manager').disabled = True
 
 ############################
@@ -55,7 +56,7 @@ imgtls.warmUpCamera(cam)
 ############################
 # Start Control Loop
 ############################
-for i in range(5):
+for i in range(500):
     logging.info("Capturing Image Number - %s" % i)
     ret, imgArray = imgtls.capturePic(cam)
 
