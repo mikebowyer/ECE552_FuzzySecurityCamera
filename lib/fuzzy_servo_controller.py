@@ -244,11 +244,17 @@ class fuzzyServoSetPointChangeCalc:
             if(horizOrVert == 'vertical'):
                 titleStr = 'Rule application result - \nBright cluster center {} pixels from the center vertically'.format(
                     pixFromCenter)
+                ax0.set_xlabel(
+                    "Output Variable - Change in camera vertical angle (Degrees)")
             else:
                 titleStr = 'Rule application result - \nBright cluster center {} pixels from the center horizontally'.format(
                     pixFromCenter)
+                ax0.set_xlabel(
+                    "Output Variable - Change in camera horizontal angle (Degrees)")
 
             ax0.set_title(titleStr)
+            ax0.legend()
+            ax0.set_ylabel("Membership Amount")
             # Turn off top/right axes
             for ax in (ax0,):
                 ax.spines['top'].set_visible(False)
@@ -298,12 +304,19 @@ class fuzzyServoSetPointChangeCalc:
                              facecolor='Orange', alpha=0.7)
             ax0.plot([output_servoAngleChange, output_servoAngleChange], [0, output_activation],
                      'k', linewidth=1.5, alpha=0.9)
+
             if(horizOrVert == 'vertical'):
                 ax0.set_title(
                     'Defuzzification result - \nBright cluster center {} pixels from the center vertically'.format(pixFromCenter))
+                ax0.set_xlabel(
+                    "Output Variable - Change in camera vertical angle (Degrees)")
             else:
                 ax0.set_title(
                     'Defuzzification result - \nBright cluster center {} pixels from the center horizontally'.format(pixFromCenter))
+                ax0.set_xlabel(
+                    "Output Variable - Change in camera horizontal angle (Degrees)")
+            ax0.legend()
+            ax0.set_ylabel("Membership Amount")
 
             # Turn off top/right axes
             for ax in (ax0,):
